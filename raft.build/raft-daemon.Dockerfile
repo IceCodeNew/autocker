@@ -54,7 +54,7 @@ COPY --link --from=secure-mirrors --chown=65532:65532 /secure-mirrors/ /
 
 FROM node
 # renovate: datasource=npm packageName=@botiverse/raft-daemon
-ARG RAFT_DAEMON_VERSION=0.68.0
+ARG RAFT_DAEMON_VERSION=0.70.2
 # renovate: datasource=npm packageName=@openai/codex
 ARG CODEX_VERSION=0.142.5
 RUN mise use -g \
