@@ -8,7 +8,7 @@ package_manager = "pnpm"
 EOF
 USER root:root
 RUN extrepo enable mise \
-    && install_packages mise
+    && install_packages libatomic1 mise
 
 USER nonroot:nonroot
 ENV PATH="/home/nonroot/.local/share/mise/shims:${PATH}"
