@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.24.0@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89
+# syntax=docker/dockerfile:1.25.0@sha256:0adf442eae370b6087e08edc7c50b552d80ddf261576f4ebd6421006b2461f12
 
 FROM icecodexi/python:debian-nonroot@sha256:21101b4a4d5d7c9f98ca56141661be2312613e074f8c77eeb241d3897eb40786 AS secure-mirrors
 COPY --link <<npm <<pip <<uv /
