@@ -39,7 +39,8 @@ RUN extrepo enable mise \
     && install_packages libatomic1 mise
 
 USER nonroot:nonroot
-ENV PATH="${HOME}/.local/share/mise/shims:${PATH}" \
+ENV PNPM_HOME="${HOME}/.local/share/pnpm"
+ENV PATH="${HOME}/.local/share/mise/shims:${PNPM_HOME}/bin:${PATH}" \
     SHELL=bash
 RUN mise use -g node@24.18.0 pnpm@11.10.0
 
@@ -55,6 +56,6 @@ FROM node
 ARG ver_raft_daemon
 RUN pnpm setup \
     && pnpm add -g "@botiverse/raft-daemon@${ver_raft_daemon}"
-ENTRYPOINT [ "/pnpm/bin/raft-daemon" ]
+ENTRYPOINT [ "raft-daemon" ]
 ENV RAFT_SERVER_URL='https://api.raft.build'
 CMD [ "--server-url", "$RAFT_SERVER_URL", "--api-key", "$RAFT_API_KEY" ]
