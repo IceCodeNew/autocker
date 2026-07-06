@@ -53,9 +53,11 @@ COPY --link --from=secure-mirrors --chown=65532:65532 /secure-mirrors/ /
 
 
 FROM node
-ARG ver_raft_daemon
-ARG ver_codex
+# renovate: datasource=npm packageName=@botiverse/raft-daemon
+ARG RAFT_DAEMON_VERSION=0.68.0
+# renovate: datasource=npm packageName=@openai/codex
+ARG CODEX_VERSION=0.142.5
 RUN mise use -g \
-    "npm:@botiverse/raft-daemon@${ver_raft_daemon}" \
-    "npm:@openai/codex@${ver_codex}"
+    "npm:@botiverse/raft-daemon@${RAFT_DAEMON_VERSION}" \
+    "npm:@openai/codex@${CODEX_VERSION}"
 ENTRYPOINT [ "raft-daemon" ]

@@ -13,12 +13,12 @@ on:
   workflow_dispatch:
 
 env:
-  raft_daemon_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/raft-daemon
+  RAFT_DAEMON_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/raft-daemon
+  # renovate: datasource=npm packageName=@botiverse/raft-daemon
+  RAFT_DAEMON_VERSION: 0.68.0
 
 jobs:
   raft-daemon:
-    outputs:
-      ver_raft_daemon: ${{ steps.chores.outputs.ver_raft_daemon }}
     runs-on: ${{ matrix.platform == 'linux/arm64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
     strategy:
       fail-fast: false
@@ -38,39 +38,18 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
-      - name: Chores (generate envs)
-        id: chores
-        run: |
-          set -e -o pipefail
-
-          if [[ ! -s raft.build/.codex_version ]]; then
-              echo "ERROR: .codex_version file not found or is empty"
-              exit 1
-          fi
-          if [[ ! -s raft.build/.raft_daemon_version ]]; then
-              echo "ERROR: .raft_daemon_version file not found or is empty"
-              exit 1
-          fi
-
-          ver_codex="$(tr -d '\r\n\t\f\v ' < raft.build/.codex_version)"
-          ver_raft_daemon="$(tr -d '\r\n\t\f\v ' < raft.build/.raft_daemon_version)"
-          echo "ver_codex=${ver_codex}" >> "$GITHUB_OUTPUT"
-          echo "ver_raft_daemon=${ver_raft_daemon}" >> "$GITHUB_OUTPUT"
 
       - name: Build and push by digest
         id: build
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
-          build-args: |
-            ver_codex=${{ steps.chores.outputs.ver_codex }}
-            ver_raft_daemon=${{ steps.chores.outputs.ver_raft_daemon }}
           context: "{{defaultContext}}:raft.build"
           file: raft-daemon.Dockerfile
           push: true
           platforms: ${{ matrix.platform }}
           cache-from: type=gha,scope=${{ matrix.platform }}
           cache-to: type=gha,mode=max,scope=${{ matrix.platform }}
-          outputs: type=image,compression=estargz,force-compression=true,oci-mediatypes=true,name=${{ env.raft_daemon_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,compression=estargz,force-compression=true,oci-mediatypes=true,name=${{ env.RAFT_DAEMON_IMAGE }},push-by-digest=true,name-canonical=true,push=true
       - name: Export digest
         env:
           digest: ${{ steps.build.outputs.digest }}
@@ -108,21 +87,19 @@ jobs:
       - name: Create manifest list and push
         working-directory: /tmp/raft-daemon-digests/
         env:
-          REGISTRY_IMAGE: ${{ env.raft_daemon_IMAGE }}
-          ver_raft_daemon: ${{ needs.raft-daemon.outputs.ver_raft_daemon }}
+          REGISTRY_IMAGE: ${{ env.RAFT_DAEMON_IMAGE }}:${{ env.RAFT_DAEMON_VERSION }}
         run: |
           # shellcheck disable=SC2046
-          docker buildx imagetools create --tag "${REGISTRY_IMAGE}:${ver_raft_daemon}" \
+          docker buildx imagetools create --tag "${REGISTRY_IMAGE}" \
               $(printf "${REGISTRY_IMAGE}@sha256:%s " *)
       - name: Inspect image
         env:
-          REGISTRY_IMAGE: ${{ env.raft_daemon_IMAGE }}
-          ver_raft_daemon: ${{ needs.raft-daemon.outputs.ver_raft_daemon }}
+          REGISTRY_IMAGE: ${{ env.RAFT_DAEMON_IMAGE }}:${{ env.RAFT_DAEMON_VERSION }}
         run: |
-          docker buildx imagetools inspect "${REGISTRY_IMAGE}:${ver_raft_daemon}" \
+          docker buildx imagetools inspect "${REGISTRY_IMAGE}" \
               | grep -Po '[^ \r\n\t\v]+@sha256:[a-z0-9]+' | xargs -r -t -n 1 docker buildx imagetools inspect --raw
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
-          image-ref: "${{ env.raft_daemon_IMAGE }}:${{ needs.raft-daemon.outputs.ver_raft_daemon }}"
+          image-ref: "${{ env.RAFT_DAEMON_IMAGE }}:${{ env.RAFT_DAEMON_VERSION }}"
           format: "table"

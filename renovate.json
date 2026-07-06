@@ -2,17 +2,24 @@
   "customManagers": [
     {
       "customType": "regex",
-      "managerFilePatterns": ["/^\\.raft_daemon_version$/"],
-      "matchStrings": ["(?<currentValue>.*?)\\n"],
-      "depNameTemplate": "@botiverse/raft-daemon",
-      "datasourceTemplate": "npm"
+      "description": "Update _VERSION variables in Dockerfiles",
+      "managerFilePatterns": [
+        "/(^|/|\\.)[dD]ockerfile$/",
+        "/(^|/)[dD]ockerfile\\.[^/]*$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z-]+?)(?: depName=(?<depName>.+?))? packageName=(?<packageName>.+?)(?: versioning=(?<versioning>[a-z-]+?))?\\s(?:ENV|ARG) .+?_VERSION=(?<currentValue>.+?)\\s"
+      ]
     },
     {
       "customType": "regex",
-      "managerFilePatterns": ["/^\\.codex_version$/"],
-      "matchStrings": ["(?<currentValue>.*?)\\n"],
-      "depNameTemplate": "@openai/codex",
-      "datasourceTemplate": "npm"
+      "description": "Update _VERSION variables in github actions",
+      "managerFilePatterns": [
+        "/(^|/)\\.github\/workflows\/raft\\.build\\.yml$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z-]+?)(?: depName=(?<depName>.+?))? packageName=(?<packageName>.+?)(?: versioning=(?<versioning>[a-z-]+?))?\\s.+?_VERSION: (?<currentValue>.+?)\\s"
+      ]
     }
   ],
   "extends": [
