@@ -37,6 +37,10 @@
       "internalChecksFilter": "strict"
     },
     {
+      "matchPackageNames": ["@botiverse/raft*"],
+      "minimumReleaseAge": null
+    },
+    {
       "matchUpdateTypes": ["minor", "patch"],
       "matchCurrentVersion": "!/^0/",
       "automerge": true
