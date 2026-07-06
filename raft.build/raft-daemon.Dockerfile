@@ -1,7 +1,18 @@
 # syntax=docker/dockerfile:1.24.0@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89
 
-FROM ghcr.io/pnpm/pnpm:11.10.0@sha256:9a6eb06d5f861d830fe27d85a91415e60527fa45ec45b52ee43c92a8aaf3bf8a AS node
-RUN pnpm runtime set node 24.18.0 -g
+FROM icecodexi/python:debian-nonroot@sha256:21101b4a4d5d7c9f98ca56141661be2312613e074f8c77eeb241d3897eb40786 AS node
+COPY --link --chown=65532:65532 <<EOF "/home/nonroot/.config/mise/config.toml"
+[settings]
+[settings.npm]
+package_manager = "pnpm"
+EOF
+USER root:root
+RUN extrepo enable mise \
+    && install_packages mise
+
+USER nonroot:nonroot
+ENV PATH="/home/nonroot/.local/share/mise/shims:${PATH}"
+RUN mise use -g node@24.18.0 pnpm@11.10.0
 
 FROM node
 ARG ver_raft_daemon
