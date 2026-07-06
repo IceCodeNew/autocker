@@ -54,8 +54,8 @@ COPY --link --from=secure-mirrors --chown=65532:65532 /secure-mirrors/ /
 
 FROM node
 ARG ver_raft_daemon
-RUN pnpm setup \
-    && pnpm add -g "@botiverse/raft-daemon@${ver_raft_daemon}"
+ARG ver_codex
+RUN mise use -g \
+    "npm:@botiverse/raft-daemon@${ver_raft_daemon}" \
+    "npm:@openai/codex@${ver_codex}"
 ENTRYPOINT [ "raft-daemon" ]
-ENV RAFT_SERVER_URL='https://api.raft.build'
-CMD [ "--server-url", "$RAFT_SERVER_URL", "--api-key", "$RAFT_API_KEY" ]

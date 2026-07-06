@@ -6,6 +6,13 @@
       "matchStrings": ["(?<currentValue>.*?)\\n"],
       "depNameTemplate": "@botiverse/raft-daemon",
       "datasourceTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^\\.codex_version$/"],
+      "matchStrings": ["(?<currentValue>.*?)\\n"],
+      "depNameTemplate": "@openai/codex",
+      "datasourceTemplate": "npm"
     }
   ],
   "extends": [
