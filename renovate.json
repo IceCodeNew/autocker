@@ -20,6 +20,16 @@
       "matchStrings": [
         "# renovate: datasource=(?<datasource>[a-z-]+?)(?: depName=(?<depName>.+?))? packageName=(?<packageName>.+?)(?: versioning=(?<versioning>[a-z-]+?))?\\s.+?_VERSION: (?<currentValue>.+?)\\s"
       ]
+    },
+    {
+      "customType": "regex",
+      "description": "Update _VERSION variables in README.md",
+      "managerFilePatterns": [
+        "/^README\\.md$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z-]+?)(?: depName=(?<depName>.+?))? packageName=(?<packageName>.+?)(?: versioning=(?<versioning>[a-z-]+?))?\\s(?:export) .+?_VERSION=(?<currentValue>.+?)\\s"
+      ]
     }
   ],
   "extends": [
