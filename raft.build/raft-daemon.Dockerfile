@@ -43,13 +43,18 @@ package_manager = "pnpm"
 EOF
 USER root:root
 RUN extrepo enable mise \
-    && install_packages libatomic1 mise
+    && install_packages libatomic1 mise \
+    && mkdir -p "${HOME}/.cache" \
+    && chown 65532:65532 "${HOME}/.cache"
 
 USER nonroot:nonroot
 ENV PNPM_HOME="${HOME}/.local/share/pnpm"
 ENV PATH="${HOME}/.local/share/mise/shims:${PNPM_HOME}/bin:${PATH}" \
     SHELL=bash
-RUN mise use -g node@24.18.0 pnpm@11.10.0
+RUN --mount=type=cache,id=mise-cache,target=/home/nonroot/.cache/mise,uid=65532,gid=65532 \
+    --mount=type=cache,id=npm-cache,target=/home/nonroot/.npm,uid=65532,gid=65532 \
+    --mount=type=cache,id=sigstore-cache,target=/home/nonroot/.cache/sigstore,uid=65532,gid=65532 \
+    mise use -g node@24.18.0 pnpm@11.10.0
 
 ENV  NPM_CONFIG_REGISTRY=https://npm.flatt.tech/ \
     PNPM_CONFIG_REGISTRY=https://npm.flatt.tech/ \
