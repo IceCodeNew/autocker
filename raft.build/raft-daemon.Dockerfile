@@ -57,7 +57,7 @@ USER root:root
 RUN extrepo enable mise \
     && install_packages \
         libatomic1 mise \
-        build-essential \
+        build-essential musl \
         curl \
         git \
         jq \
@@ -151,6 +151,10 @@ RUN --mount=type=cache,id=mise-cache,target=/home/nonroot/.cache/mise,uid=65532,
     <<EOF
 set -euo pipefail
 cat >> "${HOME}/.config/mise/config.toml" <<CONFIG
+ast-grep = "latest"
+gh = "latest"
+shellcheck = "latest"
+tree-sitter = "latest"
 
 "npm:@openai/codex" = "${CODEX_VERSION}"
 "npm:@jackwener/opencli" = "${OPENCLI_VERSION}"
@@ -160,5 +164,9 @@ CONFIG
 mise reshim
 EOF
 
+COPY --link --from=ghcr.io/astral-sh/ruff:0.15.20@sha256:03cc33c3f7f31ba53040fb1f1b8744a03a777033650f543d689d1ed98298f14b /ruff /usr/local/bin/
+COPY --link --from=ghcr.io/astral-sh/ty:0.0.56@sha256:fe1745069547b98eb813922bddf5eae50f3b59d6ce69594884282ea3beed6c9b /ty /usr/local/bin/
 COPY --link --from=ghcr.io/astral-sh/uv:0.11.27@sha256:4d01caf3b22dfd11003455e2e68153da08c4ee1fa54fdbd166c6282d22693419 /uv /uvx /usr/local/bin/
+COPY --link --from=mikefarah/yq:4.53.3@sha256:11a1f0b604b13dbbdc662260d8db6f644b22d8553122a25c1b5b2e8713ca6977 /usr/bin/yq /usr/local/bin/
+COPY --link --from=ghcr.io/j178/prek:v0.4.8@sha256:923fe4fde30504a5043a590e8dc175d0dc270a3311d14aec44994ad4fd4a088e /prek /usr/local/bin/
 ENTRYPOINT [ "raft-daemon" ]
