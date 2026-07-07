@@ -14,6 +14,7 @@ on:
 
 env:
   RAFT_DAEMON_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/raft-daemon
+  RAFT_DAEMON_LOCAL_IMAGE: raft-daemon:smoke-test
   # renovate: datasource=npm packageName=@botiverse/raft-daemon
   RAFT_DAEMON_VERSION: 0.70.3
 
@@ -45,12 +46,21 @@ jobs:
         with:
           context: "{{defaultContext}}:raft.build"
           file: raft-daemon.Dockerfile
-          push: true
           platforms: ${{ matrix.platform }}
           cache-from: type=gha,scope=${{ matrix.platform }}
           cache-to: type=gha,mode=max,scope=${{ matrix.platform }}
-          outputs: type=image,compression=estargz,force-compression=true,oci-mediatypes=true,name=${{ env.RAFT_DAEMON_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          outputs: |
+            type=image,compression=estargz,force-compression=true,oci-mediatypes=true,name=${{ env.RAFT_DAEMON_IMAGE }},push-by-digest=${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }},name-canonical=true,push=${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+            type=docker,name=${{ env.RAFT_DAEMON_LOCAL_IMAGE }},dest=/tmp/raft-daemon-image.tar
+      - name: Smoke test
+        run: |
+          docker load --input /tmp/raft-daemon-image.tar
+          docker image inspect "${RAFT_DAEMON_LOCAL_IMAGE}"
+          docker run --rm --pull=never --entrypoint raft "${RAFT_DAEMON_LOCAL_IMAGE}" --version
+          docker run --rm --pull=never --entrypoint yq   "${RAFT_DAEMON_LOCAL_IMAGE}" --version
+
       - name: Export digest
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         env:
           digest: ${{ steps.build.outputs.digest }}
           platform: ${{ matrix.platform }}
@@ -59,6 +69,7 @@ jobs:
           touch "/tmp/raft-daemon-digests/${digest#sha256:}"
           echo "PLATFORM_PAIR=${platform//\//-}" >> "$GITHUB_ENV"
       - name: Upload digest
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: raft-daemon-digests-${{ env.PLATFORM_PAIR }}
@@ -67,6 +78,7 @@ jobs:
           retention-days: 1
 
   raft-daemon-multiarch:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-24.04
     needs:
       - raft-daemon
