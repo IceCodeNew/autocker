@@ -54,6 +54,7 @@ EOF
 USER root:root
 RUN extrepo enable mise \
     && install_packages libatomic1 mise \
+        git openssh-client \
     && mkdir -p "${HOME}/.cache" "${HOME}/.local/share/mise" "${HOME}/.local/state/mise" /empty/home/nonroot/.local/share \
     && chown -R 65532:65532 "${HOME}" /empty
 
