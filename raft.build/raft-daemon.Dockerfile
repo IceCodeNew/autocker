@@ -20,7 +20,7 @@ registry=https://npm.flatt.tech/
 npm
 
 [global]
-index-url = https://token:tg_xxxxxx@pypi.flatt.tech/simple/
+index-url = https://pypi.flatt.tech/simple/
 pip
 
 [[index]]
