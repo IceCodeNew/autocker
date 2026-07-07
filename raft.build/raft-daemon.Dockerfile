@@ -11,7 +11,7 @@ ARG OPENCLI_VERSION=1.8.6
 # renovate: datasource=npm packageName=@botiverse/raft
 ARG RAFT_CLI_VERSION=0.0.15
 # renovate: datasource=npm packageName=@botiverse/raft-daemon
-ARG RAFT_DAEMON_VERSION=0.70.3
+ARG RAFT_DAEMON_VERSION=0.71.0
 
 FROM icecodexi/python:debian-nonroot@sha256:e5e1284e0664e199d2b91e73196c15bd8c450cc52ccc66ebe3f5b2667c21274e AS secure-mirrors
 COPY --link <<npm <<pip <<uv /
