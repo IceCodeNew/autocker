@@ -156,6 +156,8 @@ gh = "latest"
 shellcheck = "latest"
 tree-sitter = "latest"
 
+"github:aptible/supercronic" = "latest"
+
 "npm:@openai/codex" = "${CODEX_VERSION}"
 "npm:@jackwener/opencli" = "${OPENCLI_VERSION}"
 "npm:@botiverse/raft" = "${RAFT_CLI_VERSION}"
