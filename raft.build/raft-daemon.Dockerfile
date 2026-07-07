@@ -11,7 +11,7 @@ ARG RAFT_DAEMON_VERSION=0.70.2
 # renovate: datasource=npm packageName=@openai/codex
 ARG CODEX_VERSION=0.142.5
 
-FROM icecodexi/python:debian-nonroot@sha256:21101b4a4d5d7c9f98ca56141661be2312613e074f8c77eeb241d3897eb40786 AS secure-mirrors
+FROM icecodexi/python:debian-nonroot@sha256:e5e1284e0664e199d2b91e73196c15bd8c450cc52ccc66ebe3f5b2667c21274e AS secure-mirrors
 COPY --link <<npm <<pip <<uv /
 
 registry=https://npm.flatt.tech/
@@ -37,7 +37,7 @@ RUN mkdir -p \
     && cp -f /pip "/secure-mirrors/${HOME}/.config/pip/pip.conf" \
     && cp -f /uv  "/secure-mirrors/${HOME}/.config/uv/uv.toml"
 
-FROM icecodexi/python:debian-nonroot@sha256:21101b4a4d5d7c9f98ca56141661be2312613e074f8c77eeb241d3897eb40786 AS pnpm
+FROM icecodexi/python:debian-nonroot@sha256:e5e1284e0664e199d2b91e73196c15bd8c450cc52ccc66ebe3f5b2667c21274e AS pnpm
 ARG NODE_VERSION
 ARG PNPM_VERSION
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
