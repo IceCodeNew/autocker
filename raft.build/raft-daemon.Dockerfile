@@ -6,6 +6,8 @@ ARG NODE_VERSION=24.18.0
 ARG PNPM_VERSION=11.10.0
 # renovate: datasource=npm packageName=@openai/codex
 ARG CODEX_VERSION=0.142.5
+# renovate: datasource=npm packageName=@jackwener/opencli
+ARG OPENCLI_VERSION=1.8.6
 # renovate: datasource=npm packageName=@botiverse/raft
 ARG RAFT_CLI_VERSION=0.0.15
 # renovate: datasource=npm packageName=@botiverse/raft-daemon
@@ -96,6 +98,19 @@ RUN --mount=type=cache,id=mise-cache,target=/home/nonroot/.cache/mise,uid=65532,
     && mv "${HOME}/.local/share/mise/installs/npm-openai-codex" /empty/home/nonroot/.local/share/mise/installs/ \
     && cp -a "${PNPM_CONFIG_STORE_DIR}" /empty/home/nonroot/.local/share/pnpm/store
 
+FROM pnpm AS opencli
+ARG OPENCLI_VERSION
+RUN --mount=type=cache,id=mise-cache,target=/home/nonroot/.cache/mise,uid=65532,gid=65532 \
+    --mount=type=cache,id=mise-downloads-cache,target=/home/nonroot/.local/share/mise/downloads,uid=65532,gid=65532 \
+    --mount=type=cache,id=npm-cache,target=/home/nonroot/.npm,uid=65532,gid=65532 \
+    --mount=type=cache,id=pnpm-store,target=/home/nonroot/.local/share/pnpm/store,uid=65532,gid=65532 \
+    --mount=type=cache,id=sigstore-cache,target=/home/nonroot/.cache/sigstore-rust,uid=65532,gid=65532 \
+    mise use -g "npm:@jackwener/opencli@${OPENCLI_VERSION}" \
+    && rm -rf /empty/* \
+    && mkdir -p /empty/home/nonroot/.local/share/mise/installs /empty/home/nonroot/.local/share/pnpm \
+    && mv "${HOME}/.local/share/mise/installs/npm-jackwener-opencli" /empty/home/nonroot/.local/share/mise/installs/ \
+    && cp -a "${PNPM_CONFIG_STORE_DIR}" /empty/home/nonroot/.local/share/pnpm/store
+
 FROM pnpm AS raft-cli
 ARG RAFT_CLI_VERSION
 RUN --mount=type=cache,id=mise-cache,target=/home/nonroot/.cache/mise,uid=65532,gid=65532 \
@@ -124,11 +139,13 @@ RUN --mount=type=cache,id=mise-cache,target=/home/nonroot/.cache/mise,uid=65532,
 
 FROM pnpm
 ARG CODEX_VERSION
+ARG OPENCLI_VERSION
 ARG RAFT_CLI_VERSION
 ARG RAFT_DAEMON_VERSION
+COPY --link --from=codex --chown=65532:65532 /empty/ /
+COPY --link --from=opencli --chown=65532:65532 /empty/ /
 COPY --link --from=raft-cli --chown=65532:65532 /empty/ /
 COPY --link --from=raft-daemon --chown=65532:65532 /empty/ /
-COPY --link --from=codex --chown=65532:65532 /empty/ /
 RUN --mount=type=cache,id=mise-cache,target=/home/nonroot/.cache/mise,uid=65532,gid=65532 \
     --mount=type=cache,id=npm-cache,target=/home/nonroot/.npm,uid=65532,gid=65532 \
     <<EOF
@@ -136,6 +153,7 @@ set -euo pipefail
 cat >> "${HOME}/.config/mise/config.toml" <<CONFIG
 
 "npm:@openai/codex" = "${CODEX_VERSION}"
+"npm:@jackwener/opencli" = "${OPENCLI_VERSION}"
 "npm:@botiverse/raft" = "${RAFT_CLI_VERSION}"
 "npm:@botiverse/raft-daemon" = "${RAFT_DAEMON_VERSION}"
 CONFIG
