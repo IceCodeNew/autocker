@@ -11,6 +11,7 @@ on:
   schedule:
     - cron: "12 12 * * *"
   workflow_dispatch:
+  merge_group:
 
 env:
   RAFT_DAEMON_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/raft-daemon
