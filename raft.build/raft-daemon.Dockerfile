@@ -75,7 +75,7 @@ RUN --mount=type=cache,id=mise-cache,target=/home/nonroot/.cache/mise,uid=65532,
     --mount=type=cache,id=sigstore-cache,target=/home/nonroot/.cache/sigstore-rust,uid=65532,gid=65532 \
     mise install && mise reshim
 
-COPY --link --from=ghcr.io/astral-sh/uv:0.11.27 /uv /uvx /usr/local/bin/
+COPY --link --from=ghcr.io/astral-sh/uv:0.11.27@sha256:4d01caf3b22dfd11003455e2e68153da08c4ee1fa54fdbd166c6282d22693419 /uv /uvx /usr/local/bin/
 ENV  NPM_CONFIG_REGISTRY=https://npm.flatt.tech/ \
     PNPM_CONFIG_REGISTRY=https://npm.flatt.tech/ \
            PIP_INDEX_URL=https://pypi.flatt.tech/simple/ \
