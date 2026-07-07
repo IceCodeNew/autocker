@@ -1,5 +1,12 @@
 # syntax=docker/dockerfile:1.25.0@sha256:0adf442eae370b6087e08edc7c50b552d80ddf261576f4ebd6421006b2461f12
 
+# renovate: datasource=npm packageName=@botiverse/raft
+ARG RAFT_CLI_VERSION=0.0.15
+# renovate: datasource=npm packageName=@botiverse/raft-daemon
+ARG RAFT_DAEMON_VERSION=0.70.2
+# renovate: datasource=npm packageName=@openai/codex
+ARG CODEX_VERSION=0.142.5
+
 FROM icecodexi/python:debian-nonroot@sha256:21101b4a4d5d7c9f98ca56141661be2312613e074f8c77eeb241d3897eb40786 AS secure-mirrors
 COPY --link <<npm <<pip <<uv /
 
@@ -53,12 +60,9 @@ COPY --link --from=secure-mirrors --chown=65532:65532 /secure-mirrors/ /
 
 
 FROM node
-# renovate: datasource=npm packageName=@botiverse/raft
-ARG RAFT_CLI_VERSION=0.0.15
-# renovate: datasource=npm packageName=@botiverse/raft-daemon
-ARG RAFT_DAEMON_VERSION=0.70.2
-# renovate: datasource=npm packageName=@openai/codex
-ARG CODEX_VERSION=0.142.5
+ARG RAFT_CLI_VERSION
+ARG RAFT_DAEMON_VERSION
+ARG CODEX_VERSION
 RUN mise use -g \
     "npm:@botiverse/raft@${RAFT_CLI_VERSION}" \
     "npm:@botiverse/raft-daemon@${RAFT_DAEMON_VERSION}" \
