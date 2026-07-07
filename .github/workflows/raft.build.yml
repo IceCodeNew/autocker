@@ -18,7 +18,7 @@ env:
   RAFT_DAEMON_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/raft-daemon
   RAFT_DAEMON_LOCAL_IMAGE: raft-daemon:smoke-test
   # renovate: datasource=npm packageName=@botiverse/raft-daemon
-  RAFT_DAEMON_VERSION: 0.70.3
+  RAFT_DAEMON_VERSION: 0.71.0
 
 jobs:
   raft-daemon:
