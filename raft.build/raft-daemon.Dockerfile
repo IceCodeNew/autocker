@@ -7,7 +7,7 @@ ARG PNPM_VERSION=11.10.0
 # renovate: datasource=npm packageName=@botiverse/raft
 ARG RAFT_CLI_VERSION=0.0.15
 # renovate: datasource=npm packageName=@botiverse/raft-daemon
-ARG RAFT_DAEMON_VERSION=0.70.2
+ARG RAFT_DAEMON_VERSION=0.70.3
 # renovate: datasource=npm packageName=@openai/codex
 ARG CODEX_VERSION=0.142.5
 
