@@ -53,7 +53,14 @@ pnpm = "${PNPM_VERSION}"
 EOF
 USER root:root
 RUN extrepo enable mise \
-    && install_packages libatomic1 mise \
+    && install_packages \
+        libatomic1 mise \
+        build-essential \
+        curl \
+        git \
+        jq \
+        openssh-client \
+        ripgrep \
     && mkdir -p "${HOME}/.cache" "${HOME}/.local/share/mise" "${HOME}/.local/state/mise" /empty/home/nonroot/.local/share \
     && chown -R 65532:65532 "${HOME}" /empty
 
@@ -68,6 +75,7 @@ RUN --mount=type=cache,id=mise-cache,target=/home/nonroot/.cache/mise,uid=65532,
     --mount=type=cache,id=sigstore-cache,target=/home/nonroot/.cache/sigstore-rust,uid=65532,gid=65532 \
     mise install && mise reshim
 
+COPY --link --from=ghcr.io/astral-sh/uv:0.11.27 /uv /uvx /usr/local/bin/
 ENV  NPM_CONFIG_REGISTRY=https://npm.flatt.tech/ \
     PNPM_CONFIG_REGISTRY=https://npm.flatt.tech/ \
            PIP_INDEX_URL=https://pypi.flatt.tech/simple/ \
