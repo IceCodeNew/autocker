@@ -16,7 +16,7 @@ on:
 env:
   RAFT_DAEMON_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/raft-daemon
   # renovate: datasource=npm packageName=@botiverse/raft-daemon
-  RAFT_DAEMON_VERSION: 0.70.2
+  RAFT_DAEMON_VERSION: 0.70.3
 
 jobs:
   raft-daemon:
