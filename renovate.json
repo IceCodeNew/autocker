@@ -56,6 +56,11 @@
       "allowedVersions": "/^24\\./"
     },
     {
+      "matchUpdateTypes": ["digest"],
+      "matchDatasources": ["docker"],
+      "automerge": true
+    },
+    {
       "matchUpdateTypes": ["minor", "patch"],
       "matchCurrentVersion": "!/^0/",
       "automerge": true
