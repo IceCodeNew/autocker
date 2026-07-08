@@ -8,6 +8,8 @@ ARG PNPM_VERSION=11.10.0
 ARG CODEX_VERSION=0.142.5
 # renovate: datasource=npm packageName=@jackwener/opencli
 ARG OPENCLI_VERSION=1.8.6
+# renovate: datasource=npm packageName=opencode-ai
+ARG OPENCODE_VERSION=1.17.14
 # renovate: datasource=npm packageName=@botiverse/raft
 ARG RAFT_CLI_VERSION=0.0.15
 # renovate: datasource=npm packageName=@botiverse/raft-daemon
@@ -113,6 +115,15 @@ RUN --mount=type=cache,id=mise-cache,target=/home/nonroot/.cache/mise,uid=65532,
     && mv "${HOME}/.local/share/mise/installs/npm-jackwener-opencli" /empty/home/nonroot/.local/share/mise/installs/ \
     && cp -a "${PNPM_CONFIG_STORE_DIR}" /empty/home/nonroot/.local/share/pnpm/store
 
+FROM pnpm AS opencode
+ARG ANTIGRAVITY_CLI_VERSION
+RUN --mount=type=cache,id=mise-cache,target=/home/nonroot/.cache/mise,uid=65532,gid=65532 \
+    --mount=type=cache,id=mise-downloads-cache,target=/home/nonroot/.local/share/mise/downloads,uid=65532,gid=65532 \
+    mise use -g "opencode@${OPENCODE_VERSION}" \
+    && rm -rf /empty/* \
+    && mkdir -p /empty/home/nonroot/.local/share/mise/installs \
+    && mv "${HOME}/.local/share/mise/installs/opencode" /empty/home/nonroot/.local/share/mise/installs/
+
 FROM pnpm AS raft-cli
 ARG RAFT_CLI_VERSION
 RUN --mount=type=cache,id=mise-cache,target=/home/nonroot/.cache/mise,uid=65532,gid=65532 \
@@ -151,11 +162,13 @@ RUN --mount=type=cache,id=mise-cache,target=/home/nonroot/.cache/mise,uid=65532,
 FROM pnpm
 ARG CODEX_VERSION
 ARG OPENCLI_VERSION
+ARG OPENCODE_VERSION
 ARG RAFT_CLI_VERSION
 ARG RAFT_DAEMON_VERSION
 ARG ANTIGRAVITY_CLI_VERSION
 COPY --link --from=codex --chown=65532:65532 /empty/ /
 COPY --link --from=opencli --chown=65532:65532 /empty/ /
+COPY --link --from=opencode --chown=65532:65532 /empty/ /
 COPY --link --from=raft-cli --chown=65532:65532 /empty/ /
 COPY --link --from=raft-daemon --chown=65532:65532 /empty/ /
 COPY --link --from=antigravity-cli --chown=65532:65532 /empty/ /
@@ -167,6 +180,7 @@ cat >> "${HOME}/.config/mise/config.toml" <<CONFIG
 antigravity-cli = "${ANTIGRAVITY_CLI_VERSION}"
 ast-grep = "latest"
 gh = "latest"
+opencode = "latest"
 shellcheck = "latest"
 tree-sitter = "latest"
 
