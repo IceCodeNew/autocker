@@ -11,9 +11,9 @@ ARG OPENCLI_VERSION=1.8.6
 # renovate: datasource=npm packageName=opencode-ai
 ARG OPENCODE_VERSION=1.17.14
 # renovate: datasource=npm packageName=@botiverse/raft
-ARG RAFT_CLI_VERSION=0.0.15
+ARG RAFT_CLI_VERSION=0.0.16
 # renovate: datasource=npm packageName=@botiverse/raft-daemon
-ARG RAFT_DAEMON_VERSION=0.71.0
+ARG RAFT_DAEMON_VERSION=0.72.0
 # renovate: datasource=github packageName=google-antigravity/antigravity-cli
 ARG ANTIGRAVITY_CLI_VERSION=1.0.16
 
