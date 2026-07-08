@@ -9,8 +9,6 @@ on:
     paths:
       - ".github/workflows/raft.build.yml"
       - "raft.build/**"
-  schedule:
-    - cron: "12 12 * * *"
   workflow_dispatch:
   merge_group:
 
@@ -40,7 +38,6 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
-
       - name: Build and push by digest
         id: build
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
@@ -50,9 +47,8 @@ jobs:
           platforms: ${{ matrix.platform }}
           cache-from: type=gha,scope=${{ matrix.platform }}
           cache-to: type=gha,mode=max,scope=${{ matrix.platform }}
-          load: ${{ github.ref != 'refs/heads/master' }}
           outputs: |
-            type=image,compression=estargz,force-compression=true,oci-mediatypes=true,name=${{ env.RAFT_DAEMON_IMAGE }},push-by-digest=${{ github.ref == 'refs/heads/master' }},name-canonical=true,push=${{ github.ref == 'refs/heads/master' }}
+            type=image,compression=estargz,force-compression=true,oci-mediatypes=true,name=${{ env.RAFT_DAEMON_IMAGE }},push-by-digest=true,name-canonical=true,push=true
       - name: Smoke test
         env:
           digest: ${{ steps.build.outputs.digest }}
@@ -64,7 +60,6 @@ jobs:
           docker run --rm --pull=never --entrypoint yq   "${test_image}" --version
 
       - name: Export digest
-        if: github.ref == 'refs/heads/master'
         env:
           digest: ${{ steps.build.outputs.digest }}
           platform: ${{ matrix.platform }}
@@ -73,7 +68,6 @@ jobs:
           touch "/tmp/raft-daemon-digests/${digest#sha256:}"
           echo "PLATFORM_PAIR=${platform//\//-}" >> "$GITHUB_ENV"
       - name: Upload digest
-        if: github.ref == 'refs/heads/master'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: raft-daemon-digests-${{ env.PLATFORM_PAIR }}
@@ -82,7 +76,6 @@ jobs:
           retention-days: 1
 
   raft-daemon-multiarch:
-    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-24.04
     needs:
       - raft-daemon
