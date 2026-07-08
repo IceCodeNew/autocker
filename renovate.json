@@ -37,7 +37,7 @@
     "group:allNonMajor",
     "group:githubArtifactActions",
     "group:linters",
-    "schedule:earlyMondays",
+    "schedule:automergeNonOfficeHours",
     "security:openssf-scorecard"
   ],
   "packageRules": [
