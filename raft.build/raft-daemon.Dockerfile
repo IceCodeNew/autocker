@@ -12,6 +12,8 @@ ARG OPENCLI_VERSION=1.8.6
 ARG RAFT_CLI_VERSION=0.0.15
 # renovate: datasource=npm packageName=@botiverse/raft-daemon
 ARG RAFT_DAEMON_VERSION=0.71.0
+# renovate: datasource=github packageName=google-antigravity/antigravity-cli
+ARG ANTIGRAVITY_CLI_VERSION=1.0.16
 
 FROM icecodexi/python:debian-nonroot@sha256:e5e1284e0664e199d2b91e73196c15bd8c450cc52ccc66ebe3f5b2667c21274e AS secure-mirrors
 COPY --link <<npm <<pip <<uv /
@@ -137,20 +139,32 @@ RUN --mount=type=cache,id=mise-cache,target=/home/nonroot/.cache/mise,uid=65532,
     && mv "${HOME}/.local/share/mise/installs/npm-botiverse-raft-daemon" /empty/home/nonroot/.local/share/mise/installs/ \
     && cp -a "${PNPM_CONFIG_STORE_DIR}" /empty/home/nonroot/.local/share/pnpm/store
 
+FROM pnpm AS antigravity-cli
+ARG ANTIGRAVITY_CLI_VERSION
+RUN --mount=type=cache,id=mise-cache,target=/home/nonroot/.cache/mise,uid=65532,gid=65532 \
+    --mount=type=cache,id=mise-downloads-cache,target=/home/nonroot/.local/share/mise/downloads,uid=65532,gid=65532 \
+    mise use -g "antigravity-cli@${ANTIGRAVITY_CLI_VERSION}" \
+    && rm -rf /empty/* \
+    && mkdir -p /empty/home/nonroot/.local/share/mise/installs \
+    && mv "${HOME}/.local/share/mise/installs/antigravity-cli" /empty/home/nonroot/.local/share/mise/installs/
+
 FROM pnpm
 ARG CODEX_VERSION
 ARG OPENCLI_VERSION
 ARG RAFT_CLI_VERSION
 ARG RAFT_DAEMON_VERSION
+ARG ANTIGRAVITY_CLI_VERSION
 COPY --link --from=codex --chown=65532:65532 /empty/ /
 COPY --link --from=opencli --chown=65532:65532 /empty/ /
 COPY --link --from=raft-cli --chown=65532:65532 /empty/ /
 COPY --link --from=raft-daemon --chown=65532:65532 /empty/ /
+COPY --link --from=antigravity-cli --chown=65532:65532 /empty/ /
 RUN --mount=type=cache,id=mise-cache,target=/home/nonroot/.cache/mise,uid=65532,gid=65532 \
     --mount=type=cache,id=npm-cache,target=/home/nonroot/.npm,uid=65532,gid=65532 \
     <<EOF
 set -euo pipefail
 cat >> "${HOME}/.config/mise/config.toml" <<CONFIG
+antigravity-cli = "${ANTIGRAVITY_CLI_VERSION}"
 ast-grep = "latest"
 gh = "latest"
 shellcheck = "latest"
