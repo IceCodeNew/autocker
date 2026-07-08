@@ -6,18 +6,22 @@ mkdir -p \
     "${HOME}/.agents/" \
     "${HOME}/.codex/" \
     "${HOME}/.gemini/" \
-    "${HOME}/.local/share/opencode/" \
-    "${HOME}/.opencode/" \
     "${HOME}/.pi/" \
-    "${HOME}/.slock/"
+    "${HOME}/.slock/" \
+    "${HOME}/.config/opencode/" \
+    "${HOME}/.local/share/opencode/" \
+    "${HOME}/.local/state/opencode/" \
+    "${HOME}/.opencode/"
 chown -R 65532:65532 \
     "${HOME}/.agents/" \
     "${HOME}/.codex/" \
     "${HOME}/.gemini/" \
-    "${HOME}/.local/share/opencode/" \
-    "${HOME}/.opencode/" \
     "${HOME}/.pi/" \
-    "${HOME}/.slock/"
+    "${HOME}/.slock/" \
+    "${HOME}/.config/opencode/" \
+    "${HOME}/.local/share/opencode/" \
+    "${HOME}/.local/state/opencode/" \
+    "${HOME}/.opencode/"
 
 export 'RAFT_SERVER_URL=https://api.raft.build'
 export 'RAFT_API_KEY=xxxxxx'
@@ -32,10 +36,12 @@ docker run --name raft-daemon --detach \
     --volume "${HOME}/.agents/:/home/nonroot/.agents/" \
     --volume "${HOME}/.codex/:/home/nonroot/.codex/" \
     --volume "${HOME}/.gemini/:/home/nonroot/.gemini/" \
-    --volume "${HOME}/.local/share/opencode/:/home/nonroot/.local/share/opencode/" \
-    --volume "${HOME}/.opencode/:/home/nonroot/.opencode/" \
     --volume "${HOME}/.pi/:/home/nonroot/.pi/" \
     --volume "${HOME}/.slock/:/home/nonroot/.slock/" \
+    --volume "${HOME}/.config/opencode/:/home/nonroot/.config/opencode/" \
+    --volume "${HOME}/.local/share/opencode/:/home/nonroot/.local/share/opencode/" \
+    --volume "${HOME}/.local/state/opencode/:/home/nonroot/.local/state/opencode/" \
+    --volume "${HOME}/.opencode/:/home/nonroot/.opencode/" \
     --env 'TZ=Asia/Shanghai' \
     --security-opt no-new-privileges \
     --restart unless-stopped \
