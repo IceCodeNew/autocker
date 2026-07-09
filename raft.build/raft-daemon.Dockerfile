@@ -97,6 +97,7 @@ mise reshim
 
 cp -a "${HOME}/.local/share/mise" "${HOME}/.local/share/pnpm" \
     "/empty/${HOME}/.local/share/"
+rm -rf "${HOME}/.cache/pnpm"
 EOF
 
 
