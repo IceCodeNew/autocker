@@ -52,7 +52,7 @@ ENV PATH="${HOME}/.local/share/mise/shims:${PNPM_HOME}/bin:${PATH}" \
     SHELL=bash
 
 
-FROM mise AS cache
+FROM mise AS assets
 # renovate: datasource=node-version packageName=node
 ARG NODE_VERSION=24.18.0
 # renovate: datasource=github-releases packageName=pnpm/pnpm
@@ -76,34 +76,38 @@ RUN --mount=type=cache,id=mise-cache,target=/home/nonroot/.cache/mise,uid=65532,
     --mount=type=cache,id=sigstore-cache,target=/home/nonroot/.cache/sigstore-rust,uid=65532,gid=65532 \
     <<EOF
 set -euo pipefail
-mise use -g \
-    node@${NODE_VERSION} pnpm@${PNPM_VERSION} \
-    antigravity-cli@${ANTIGRAVITY_CLI_VERSION} \
-    ast-grep gh opencode shellcheck tree-sitter \
-    "github:aptible/supercronic"
-cat >> "${HOME}/.config/mise/config.toml" <<CONFIG
-
+cat > "${HOME}/.config/mise/config.toml" <<CONFIG
 [settings]
 [settings.npm]
 package_manager = "pnpm"
+
+[tools]
+antigravity-cli = "${ANTIGRAVITY_CLI_VERSION}"
+ast-grep = "latest"
+gh = "latest"
+opencode = "latest"
+shellcheck = "latest"
+tree-sitter = "latest"
+
+"github:aptible/supercronic" = "latest"
 CONFIG
 
+mise use -g \
+    node@${NODE_VERSION} pnpm@${PNPM_VERSION}
 mise use -g \
     "npm:@openai/codex"@${CODEX_VERSION} \
     "npm:@jackwener/opencli"@${OPENCLI_VERSION} \
     "npm:@botiverse/raft"@${RAFT_CLI_VERSION} \
     "npm:@botiverse/raft-daemon"@${RAFT_DAEMON_VERSION}
-mise reshim
-
 cp -a "${HOME}/.local/share/mise" "${HOME}/.local/share/pnpm" \
     "/empty/${HOME}/.local/share/"
 rm -rf "${HOME}/.cache/pnpm"
 EOF
 
 
-FROM scratch AS assets
-COPY --link --from=cache /home/nonroot/ /home/nonroot/
-COPY --link --from=cache /empty/ /
+FROM scratch AS npm-pkgs
+COPY --link --from=assets /home/nonroot/ /home/nonroot/
+COPY --link --from=assets /empty/ /
 
 
 FROM mise AS final
@@ -112,6 +116,9 @@ COPY --link --from=ghcr.io/astral-sh/ty:0.0.57@sha256:44b21aba6b4050cf5145794319
 COPY --link --from=ghcr.io/astral-sh/uv:0.11.28@sha256:0f36cb9361a3346885ca3677e3767016687b5a170c1a6b88465ec14aefec90aa /uv /uvx /usr/local/bin/
 COPY --link --from=mikefarah/yq:4.53.3@sha256:11a1f0b604b13dbbdc662260d8db6f644b22d8553122a25c1b5b2e8713ca6977 /usr/bin/yq /usr/local/bin/
 COPY --link --from=ghcr.io/j178/prek:v0.4.8@sha256:923fe4fde30504a5043a590e8dc175d0dc270a3311d14aec44994ad4fd4a088e /prek /usr/local/bin/
-COPY --link --from=assets --chown=65532:65532 /home/nonroot/ /home/nonroot/
 COPY --link --chmod=755 entrypoint.sh /
+COPY --link --from=npm-pkgs --chown=65532:65532 /home/nonroot/ /home/nonroot/
+RUN --mount=type=cache,id=mise-cache,target=/home/nonroot/.cache/mise,uid=65532,gid=65532 \
+    --mount=type=cache,id=mise-downloads-cache,target=/home/nonroot/.local/share/mise/downloads,uid=65532,gid=65532 \
+    mise install && mise reshim
 ENTRYPOINT [ "catatonit", "-g", "--", "/entrypoint.sh" ]
