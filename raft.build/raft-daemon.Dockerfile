@@ -199,4 +199,5 @@ COPY --link --from=ghcr.io/astral-sh/ty:0.0.57@sha256:44b21aba6b4050cf5145794319
 COPY --link --from=ghcr.io/astral-sh/uv:0.11.28@sha256:0f36cb9361a3346885ca3677e3767016687b5a170c1a6b88465ec14aefec90aa /uv /uvx /usr/local/bin/
 COPY --link --from=mikefarah/yq:4.53.3@sha256:11a1f0b604b13dbbdc662260d8db6f644b22d8553122a25c1b5b2e8713ca6977 /usr/bin/yq /usr/local/bin/
 COPY --link --from=ghcr.io/j178/prek:v0.4.8@sha256:923fe4fde30504a5043a590e8dc175d0dc270a3311d14aec44994ad4fd4a088e /prek /usr/local/bin/
-ENTRYPOINT [ "raft-daemon" ]
+COPY --link --chmod=755 entrypoint.sh /usr/local/bin/
+ENTRYPOINT [ "catatonit", "-g", "--", "/usr/local/bin/entrypoint.sh" ]

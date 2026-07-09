@@ -42,6 +42,7 @@ docker run --name raft-daemon --detach \
     --volume "${HOME}/.local/share/opencode/:/home/nonroot/.local/share/opencode/" \
     --volume "${HOME}/.local/state/opencode/:/home/nonroot/.local/state/opencode/" \
     --volume "${HOME}/.opencode/:/home/nonroot/.opencode/" \
+    --env "CRONTAB_PATH=/home/nonroot/crontab" \
     --env 'TZ=Asia/Shanghai' \
     --security-opt no-new-privileges \
     --restart unless-stopped \
