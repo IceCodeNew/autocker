@@ -5,11 +5,11 @@ ARG NODE_VERSION=24.18.0
 # renovate: datasource=github-releases packageName=pnpm/pnpm
 ARG PNPM_VERSION=11.10.0
 # renovate: datasource=npm packageName=@openai/codex
-ARG CODEX_VERSION=0.142.5
+ARG CODEX_VERSION=0.143.0
 # renovate: datasource=npm packageName=@jackwener/opencli
 ARG OPENCLI_VERSION=1.8.6
 # renovate: datasource=npm packageName=opencode-ai
-ARG OPENCODE_VERSION=1.17.14
+ARG OPENCODE_VERSION=1.17.15
 # renovate: datasource=npm packageName=@botiverse/raft
 ARG RAFT_CLI_VERSION=0.0.16
 # renovate: datasource=npm packageName=@botiverse/raft-daemon
@@ -195,8 +195,8 @@ mise install && mise reshim
 EOF
 
 COPY --link --from=ghcr.io/astral-sh/ruff:0.15.20@sha256:03cc33c3f7f31ba53040fb1f1b8744a03a777033650f543d689d1ed98298f14b /ruff /usr/local/bin/
-COPY --link --from=ghcr.io/astral-sh/ty:0.0.56@sha256:fe1745069547b98eb813922bddf5eae50f3b59d6ce69594884282ea3beed6c9b /ty /usr/local/bin/
-COPY --link --from=ghcr.io/astral-sh/uv:0.11.27@sha256:4d01caf3b22dfd11003455e2e68153da08c4ee1fa54fdbd166c6282d22693419 /uv /uvx /usr/local/bin/
+COPY --link --from=ghcr.io/astral-sh/ty:0.0.57@sha256:44b21aba6b4050cf5145794319cc5740c89d26df91a0db974e5fe3f80fdd5281 /ty /usr/local/bin/
+COPY --link --from=ghcr.io/astral-sh/uv:0.11.28@sha256:0f36cb9361a3346885ca3677e3767016687b5a170c1a6b88465ec14aefec90aa /uv /uvx /usr/local/bin/
 COPY --link --from=mikefarah/yq:4.53.3@sha256:11a1f0b604b13dbbdc662260d8db6f644b22d8553122a25c1b5b2e8713ca6977 /usr/bin/yq /usr/local/bin/
 COPY --link --from=ghcr.io/j178/prek:v0.4.8@sha256:923fe4fde30504a5043a590e8dc175d0dc270a3311d14aec44994ad4fd4a088e /prek /usr/local/bin/
 ENTRYPOINT [ "raft-daemon" ]
