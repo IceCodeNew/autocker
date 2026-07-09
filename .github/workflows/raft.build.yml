@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - "master"
-      - "renovate/**"
     paths:
       - ".github/workflows/raft.build.yml"
       - "raft.build/**"

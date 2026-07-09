@@ -2,7 +2,12 @@ name: raft Image CI (PR)
 permissions: {}
 
 on:
+  push:
+    branches:
+      - "renovate/**"
   pull_request:
+    branches-ignore:
+      - "renovate/**"
     paths:
       - ".github/workflows/raft.build.pr.yml"
       - "raft.build/**"
