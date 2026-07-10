@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.25.0@sha256:0adf442eae370b6087e08edc7c50b552d80ddf261576f4ebd6421006b2461f12
+# syntax=mirror.gcr.io/docker/dockerfile:1.25.0@sha256:0adf442eae370b6087e08edc7c50b552d80ddf261576f4ebd6421006b2461f12
 
 FROM icecodexi/python:debian-nonroot@sha256:132d352cc6df0b8fc357515eb3f8f0155dc3c304ad408c6670b9692424112784 AS secure-mirrors
 COPY --link <<npm <<pip <<uv /
