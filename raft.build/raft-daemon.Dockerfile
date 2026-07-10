@@ -56,13 +56,13 @@ FROM mise AS assets
 # renovate: datasource=node-version packageName=node
 ARG NODE_VERSION=24.18.0
 # renovate: datasource=github-releases packageName=pnpm/pnpm
-ARG PNPM_VERSION=11.10.0
+ARG PNPM_VERSION=11.11.0
 # renovate: datasource=npm packageName=@openai/codex
-ARG CODEX_VERSION=0.143.0
+ARG CODEX_VERSION=0.144.1
 # renovate: datasource=npm packageName=@jackwener/opencli
 ARG OPENCLI_VERSION=1.8.6
 # renovate: datasource=npm packageName=opencode-ai
-ARG OPENCODE_VERSION=1.17.15
+ARG OPENCODE_VERSION=1.17.18
 # renovate: datasource=npm packageName=@botiverse/raft
 ARG RAFT_CLI_VERSION=0.0.17
 # renovate: datasource=npm packageName=@botiverse/raft-daemon
@@ -111,8 +111,8 @@ COPY --link --from=assets /empty/ /
 
 
 FROM mise AS final
-COPY --link --from=ghcr.io/astral-sh/ruff:0.15.20@sha256:03cc33c3f7f31ba53040fb1f1b8744a03a777033650f543d689d1ed98298f14b /ruff /usr/local/bin/
-COPY --link --from=ghcr.io/astral-sh/ty:0.0.57@sha256:44b21aba6b4050cf5145794319cc5740c89d26df91a0db974e5fe3f80fdd5281 /ty /usr/local/bin/
+COPY --link --from=ghcr.io/astral-sh/ruff:0.15.21@sha256:d88c0de3362ae064e5f3175ff558ee1077223d3f81a1e78b1cf57825c4882454 /ruff /usr/local/bin/
+COPY --link --from=ghcr.io/astral-sh/ty:0.0.58@sha256:8d279433ab7ebba881fe2c8a66bc892c4f3411a54f440b79c59621bc9db3ef03 /ty /usr/local/bin/
 COPY --link --from=ghcr.io/astral-sh/uv:0.11.28@sha256:0f36cb9361a3346885ca3677e3767016687b5a170c1a6b88465ec14aefec90aa /uv /uvx /usr/local/bin/
 COPY --link --from=mikefarah/yq:4.53.3@sha256:11a1f0b604b13dbbdc662260d8db6f644b22d8553122a25c1b5b2e8713ca6977 /usr/bin/yq /usr/local/bin/
 COPY --link --from=ghcr.io/j178/prek:v0.4.8@sha256:923fe4fde30504a5043a590e8dc175d0dc270a3311d14aec44994ad4fd4a088e /prek /usr/local/bin/
