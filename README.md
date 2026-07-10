@@ -26,7 +26,7 @@ chown -R 65532:65532 \
 export 'RAFT_SERVER_URL=https://api.raft.build'
 export 'RAFT_API_KEY=xxxxxx'
 # renovate: datasource=npm packageName=@botiverse/raft-daemon
-export RAFT_DAEMON_VERSION=0.72.0
+export RAFT_DAEMON_VERSION=0.72.4
 export "RAFT_DAEMON_IMAGE=icecodexi/raft-daemon:${RAFT_DAEMON_VERSION}"
 
 docker pull "$RAFT_DAEMON_IMAGE"
