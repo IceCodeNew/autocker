@@ -1,6 +1,6 @@
 # syntax=mirror.gcr.io/docker/dockerfile:1.25.0@sha256:0adf442eae370b6087e08edc7c50b552d80ddf261576f4ebd6421006b2461f12
 
-FROM icecodexi/python:debian-nonroot@sha256:132d352cc6df0b8fc357515eb3f8f0155dc3c304ad408c6670b9692424112784 AS secure-mirrors
+FROM icecodexi/python:debian-nonroot@sha256:0a9746d6ab84af692bd2a078dbc17aa3f5ab29792ae9b5d8997df85aca6e053d AS secure-mirrors
 COPY --link <<npm <<pip <<uv /
 
 registry=https://npm.flatt.tech/
@@ -27,7 +27,7 @@ RUN mkdir -p \
     && cp -f /uv  "/secure-mirrors/${HOME}/.config/uv/uv.toml"
 
 
-FROM icecodexi/python:debian-nonroot@sha256:132d352cc6df0b8fc357515eb3f8f0155dc3c304ad408c6670b9692424112784 AS mise
+FROM icecodexi/python:debian-nonroot@sha256:0a9746d6ab84af692bd2a078dbc17aa3f5ab29792ae9b5d8997df85aca6e053d AS mise
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 USER root:root
 RUN extrepo enable mise \
