@@ -85,7 +85,7 @@ package_manager = "pnpm"
 antigravity-cli = "${ANTIGRAVITY_CLI_VERSION}"
 ast-grep = "latest"
 gh = "latest"
-opencode = "latest"
+opencode = "${OPENCODE_VERSION}"
 shellcheck = "latest"
 tree-sitter = "latest"
 
