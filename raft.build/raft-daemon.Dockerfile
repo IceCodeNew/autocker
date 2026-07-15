@@ -56,7 +56,7 @@ FROM mise AS assets
 # renovate: datasource=node-version packageName=node
 ARG NODE_VERSION=24.18.0
 # renovate: datasource=github-releases packageName=pnpm/pnpm
-ARG PNPM_VERSION=11.11.0
+ARG PNPM_VERSION=11.12.0
 # renovate: datasource=npm packageName=@openai/codex
 ARG CODEX_VERSION=0.144.1
 # renovate: datasource=npm packageName=@jackwener/opencli
